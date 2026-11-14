@@ -5,75 +5,65 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ILMIY.UZ — Bilim sari ishonchli qadam!</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; }
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
-      background: #f3f6fb;
+      background: #f1f5f9;
       color: #172554;
     }
     header {
-      background: #123b78;
+      background: #123b72;
       color: white;
-      padding: 20px;
+      padding: 24px 15px;
       text-align: center;
     }
-    header h1 { font-size: 30px; }
-    header p { margin-top: 8px; color: #dbeafe; }
-    nav {
-      background: white;
-      padding: 14px;
-      text-align: center;
-      box-shadow: 0 2px 8px #0001;
-    }
-    nav a {
-      color: #123b78;
-      text-decoration: none;
-      margin: 0 12px;
-      font-weight: bold;
-    }
-    .hero {
-      text-align: center;
-      padding: 55px 20px;
-      background: linear-gradient(135deg, #dbeafe, #eff6ff);
-    }
-    .hero h2 { font-size: 32px; margin-bottom: 15px; }
-    .hero p { font-size: 17px; margin-bottom: 25px; }
-    .btn {
-      display: inline-block;
-      background: #1765c1;
-      color: white;
-      padding: 13px 25px;
-      border-radius: 9px;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    .section {
-      max-width: 1000px;
+    header h1 { margin: 0 0 8px; }
+    main {
+      max-width: 480px;
       margin: 35px auto;
-      padding: 20px;
-    }
-    .section h2 { text-align: center; margin-bottom: 25px; }
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 18px;
+      padding: 15px;
     }
     .card {
       background: white;
       padding: 25px;
       border-radius: 14px;
-      text-align: center;
-      box-shadow: 0 3px 12px #0001;
+      box-shadow: 0 4px 15px #00000012;
     }
-    .card h3 { margin-bottom: 10px; color: #1765c1; }
-    .card p { color: #475569; line-height: 1.5; }
-    footer {
-      background: #123b78;
+    h2 { text-align: center; }
+    input {
+      width: 100%;
+      padding: 13px;
+      margin: 9px 0;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 13px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 8px;
+      background: #1761b0;
       color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button.secondary { background: #16845b; }
+    button.logout { background: #b42318; }
+    #message {
       text-align: center;
-      padding: 22px;
-      margin-top: 40px;
+      margin-top: 15px;
+      line-height: 1.5;
+    }
+    #account { display: none; text-align: center; }
+    footer {
+      text-align: center;
+      padding: 25px;
+      color: #64748b;
     }
   </style>
 </head>
@@ -84,66 +74,151 @@
   <p>Bilim sari ishonchli qadam!</p>
 </header>
 
-<nav>
-  <a href="#bosh">Bosh sahifa</a>
-  <a href="#fanlar">Fanlar</a>
-  <a href="#imkoniyatlar">Imkoniyatlar</a>
-</nav>
+<main>
+  <div class="card">
+    <div id="auth">
+      <h2>Platformaga kirish</h2>
+      <p style="text-align:center">
+        Bilimingizni sinash uchun ro‘yxatdan o‘ting.
+      </p>
 
-<section class="hero" id="bosh">
-  <h2>Bilimingizni sinab ko‘ring!</h2>
-  <p>ILMIY.UZ — bilim, tajriba va yuksalish sari yangi imkoniyat.</p>
-  <a href="#fanlar" class="btn">Fanlarni ko‘rish</a>
-</section>
+      <input id="fullname" type="text"
+        placeholder="Ism va familiyangiz">
 
-<section class="section" id="fanlar">
-  <h2>Bizning fanlarimiz</h2>
-  <div class="cards">
-    <div class="card">
-      <h3>Geografiya</h3>
-      <p>Xaritalar, diagrammalar va geografik bilimlar.</p>
+      <input id="email" type="email"
+        placeholder="Email manzilingiz">
+
+      <input id="password" type="password"
+        placeholder="Parol (kamida 6 belgi)">
+
+      <button onclick="register()">Ro‘yxatdan o‘tish</button>
+      <button class="secondary" onclick="login()">Tizimga kirish</button>
+
+      <p id="message"></p>
     </div>
-    <div class="card">
-      <h3>Tarix</h3>
-      <p>Tarixiy voqealar va muhim sanalar.</p>
-    </div>
-    <div class="card">
-      <h3>Matematika</h3>
-      <p>Mantiqiy masalalar va hisoblash mashqlari.</p>
-    </div>
-    <div class="card">
-      <h3>Biologiya</h3>
-      <p>Tabiat va tirik organizmlar olami.</p>
+
+    <div id="account">
+      <h2>Xush kelibsiz!</h2>
+      <p id="userEmail"></p>
+      <p>ILMIY.UZ platformasiga muvaffaqiyatli kirdingiz.</p>
+      <button class="logout" onclick="logout()">Tizimdan chiqish</button>
     </div>
   </div>
-</section>
-
-<section class="section" id="imkoniyatlar">
-  <h2>ILMIY.UZ imkoniyatlari</h2>
-  <div class="cards">
-    <div class="card">
-      <h3>Test topshirish</h3>
-      <p>Turli fanlardan onlayn testlar.</p>
-    </div>
-    <div class="card">
-      <h3>Natijalar</h3>
-      <p>O‘z natijalaringizni kuzatib boring.</p>
-    </div>
-    <div class="card">
-      <h3>Reyting</h3>
-      <p>Bilim darajangizni baholang.</p>
-    </div>
-    <div class="card">
-      <h3>Izohlar</h3>
-      <p>To‘g‘ri javoblar va tushuntirishlar.</p>
-    </div>
-  </div>
-</section>
+</main>
 
 <footer>
-  <p>© 2026 ILMIY.UZ. Barcha huquqlar himoyalangan.</p>
-  <p>Bilim sari ishonchli qadam!</p>
+  © 2026 ILMIY.UZ. Barcha huquqlar himoyalangan.
 </footer>
+
+<script>
+  const SUPABASE_URL = "https://bocbzwwrcbicqzzqwoae.supabase.co";
+
+  const SUPABASE_KEY = "sb_publishable_jRK-ZflDhRCX2AS5DMVA1g_5B4FHOsu";
+
+  const client = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+  const message = document.getElementById("message");
+
+  function showMessage(text) {
+    message.textContent = text;
+  }
+
+  async function register() {
+    const fullname = document.getElementById("fullname").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    if (!fullname || !email || !password) {
+      showMessage("Barcha maydonlarni to‘ldiring.");
+      return;
+    }
+
+    if (password.length < 6) {
+      showMessage("Parol kamida 6 ta belgidan iborat bo‘lsin.");
+      return;
+    }
+
+    showMessage("Ro‘yxatdan o‘tilmoqda...");
+
+    const { data, error } = await client.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { full_name: fullname }
+      }
+    });
+
+    if (error) {
+      showMessage("Xatolik: " + error.message);
+      return;
+    }
+
+    if (data.session) {
+      showMessage("Ro‘yxatdan o‘tish muvaffaqiyatli!");
+      await checkUser();
+    } else {
+      showMessage("Emailingizga tasdiqlash xabari yuborildi. Emailni tekshiring.");
+    }
+  }
+
+  async function login() {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    if (!email || !password) {
+      showMessage("Email va parolni kiriting.");
+      return;
+    }
+
+    showMessage("Tizimga kirilmoqda...");
+
+    const { error } = await client.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) {
+      showMessage("Xatolik: " + error.message);
+      return;
+    }
+
+    await checkUser();
+  }
+
+  async function logout() {
+    const { error } = await client.auth.signOut();
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    await checkUser();
+  }
+
+  async function checkUser() {
+    const { data } = await client.auth.getUser();
+
+    if (data.user) {
+      document.getElementById("auth").style.display = "none";
+      document.getElementById("account").style.display = "block";
+      document.getElementById("userEmail").textContent =
+        "Email: " + data.user.email;
+    } else {
+      document.getElementById("auth").style.display = "block";
+      document.getElementById("account").style.display = "none";
+    }
+  }
+
+  client.auth.onAuthStateChange(() => {
+    checkUser();
+  });
+
+  checkUser();
+</script>
 
 </body>
 </html>
